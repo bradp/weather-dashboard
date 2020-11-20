@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>weather</title>
+	<style>
+		@import url( "https://fonts.googleapis.com/css2?family=Lato&display=swap" );
+
+		body,
+		html {
+			margin: 0;
+			height: 100%;
+			color: white;
+			font-family: Lato, "Lucida Grande", Tahoma, Sans-Serif;
+		}
+
+		.front {
+			height: 100%;
+		}
+
+		.left-container {
+			width: 100%;
+			height: 100%;
+			background-image: url( 'bg.png' );
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: cover;
+
+		}
+
+		.bg {
+			width: 100%;
+			height: 100%;
+			background-image: linear-gradient( 333deg, rgba(34, 193, 195, 1) 0%, rgba(224, 45, 253, 1) 100%) ;
+			opacity: 0.38;
+		}
+
+		.date-container {
+			position: absolute;
+			top: 25px;
+			left: 35px;
+		}
+
+		.day {
+			display: block;
+			font-size: 60px;
+			font-weight: 900;
+		}
+
+		.date {
+			display: block;
+			font-size: 25px;
+			font-weight: 100;
+		}
+
+		.weather {
+			position: absolute;
+			left: 35px;
+			bottom: 40px;
+		}
+
+		.degrees {
+			display: block;
+			font-size: 110px;
+			font-weight: 900;
+		}
+
+		.desc {
+			font-size: 30px;
+		}
+	</style>
+</head>
+<body>
+	<div class="front">
+		<div class="left-container">
+			<div class="bg"></div>
+				<div class="date-container">
+					<span class="day"><span id="day">Sunday</span><span id="date" class="date">4 Jan 2020</span></span>
+				</div>
+				<div class="weather">
+					<span class="degrees"><span id="temp">29</span>°</span> <span id="desc" class="desc">Scattered Clouds</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
+
+<script>
+	const API_KEY = "";
+	const city     = "milwaukee";
+	const unit     = "F";
+	const unit_map = "imperial"
+
+	const monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+	const dayNames = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ];
+
+	function updateDateInfo() {
+		var d = new Date;
+		var year = d.getFullYear();
+		var month = monthNames[ d.getMonth() ];
+		var date = d.getDate();
+		var day = dayNames[ d.getDay() ];
+
+		var dateSting = month + ' ' + date + ', ' + year;
+
+		document.getElementById( 'day' ).innerHTML = day;
+		document.getElementById( 'date' ).innerHTML = dateSting;
+	}
+
+	function updateWeatherInfo() {
+		fetch( `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${unit_map}&APPID=${API_KEY}` )
+		.then( response => response.json() ).then( data => {
+			document.getElementById( 'desc' ).innerHTML = data['weather'][0]['main'];
+			document.getElementById( 'temp' ).innerHTML = Math.round( data['main']['temp'] );
+		} )
+	}
+
+	updateDateInfo();
+	updateWeatherInfo();
+
+	setTimeout( updateDateInfo, 30 * 60 * 1000 );
+	setTimeout( updateWeatherInfo, 5 * 60 * 1000 );
+
+
+</script>
